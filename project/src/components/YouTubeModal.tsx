@@ -8,13 +8,16 @@ interface YouTubeModalProps {
 
 declare global {
   interface Window {
-    YT: any;
+    YT: {
+      Player: typeof YT.Player;
+      PlayerState: typeof YT.PlayerState;
+    };
     onYouTubeIframeAPIReady: () => void;
   }
 }
 
 export default function YouTubeModal({ videoId, onClose }: YouTubeModalProps) {
-  const playerRef = useRef<any>(null);
+  const playerRef = useRef<YT.Player | null>(null);
   const [timeLeft, setTimeLeft] = useState(30);
   const [isApiReady, setIsApiReady] = useState(false);
 
@@ -52,7 +55,7 @@ export default function YouTubeModal({ videoId, onClose }: YouTubeModalProps) {
         rel: 0,
       },
       events: {
-        onReady: (event: any) => {
+        onReady: (event: { target: YT.Player }) => {
           event.target.playVideo();
         },
       },
